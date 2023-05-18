@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <a data-toggle="collapse" data-target="#createTeamForm" class="m-1 btn btn-info" href='teams?createTeam=true'>Create A Team</a>
+    <div class="collapse mt-2" id="createTeamForm">
+        <form class="form-inline" method="post" action="/teams">
+            <div class="form-group mx-sm-3 mb-2">
+                <label for="teamName" class="sr-only">Team name</label>
+                <input type="text" class="form-control" id="teamName" name="teamName" placeholder="Enter team name" required>
+            </div>
+            <input type="submit" value="Create Team" class="btn btn-outline-info mb-2" name="createTeamBtn">
+        </form>
+    </div>
+    <div class="container">
+        <h1 class="text-center text-info">Your Teams</h1>
+        <div class="row justify-content-center">
+
+            {% if teamList is empty %}
+                <h5>Seems like you don't belong to any team :(</h5>
+            {% endif %}
+
+            {% for team in teamList %}
+                <div class="col-sm-6 col-lg-4 p-3">
+                    <div class="card-group">
+                        <div class="card border-info">
+                            <div class="card-body text-center">
+                                <h4 class="card-title ">{{ team.getTeamName() }}</h4>
+                                <a class="m-1 btn btn-outline-info" href='teamView?teamName={{ team.getTeamName() }}'>View</a>
+                                {% block extraBottom %}
+                                {% endblock %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
