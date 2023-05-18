@@ -1,0 +1,119 @@
+{% extends 'base.html.twig' %}
+
+
+{% block body %}
+    <a class="m-1 btn btn-primary" href='createProject?id={{ app.user.id }}'>Create A Project</a>
+    <div class="container">
+        <h1 class="text-center text-primary">{{ pageTitle }}</h1>
+        <div class="row justify-content-center">
+
+            {% if projectList is empty %}
+                <h5>Your projects will appear here!</h5>
+            {% endif %}
+
+            {% for projectList in projectList %}
+
+                <div class="col-sm-6 col-lg-4 p-3">
+                    <div class="card-group">
+                        <div class="card border-primary">
+
+                            <div class="card-body text-center">
+                                <div class="row">
+                                    <a href="projects?deleteProjectId={{ projectList.getId() }}" class="btn btn-outline-light"><i class="fa fa-trash text-danger"></i></a>
+                                </div>
+                                <h4 class="card-title ">{{ projectList.getTitle() }}</h4>
+                                <p class="card-text">Deadline: {{ projectList.getDeadline()|date('Y-m-d H:i:s') }}</p>
+
+{#                                <a class="btn btn-outline-danger" href="projects?deleteProjectId={{ projectList.getId() }}">Delete Project</a>#}
+
+
+
+                                <!-- Button trigger modal -->
+                                <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#addTask{{ projectList.getId() }}">
+                                    Manage Tasks
+                                </button>
+
+                                <!-- Modal for Manage Tasks -->
+                                <div class="modal fade" id="addTask{{ projectList.getId() }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h4 class="modal-title" id="exampleModalLabel">Add a task for {{ projectList.getTitle() }}</h4>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body text-center">
+{#                                                List all tasks in the project#}
+                                                {% if projectList.getTasks() is empty %}
+                                                    <h5>Your tasks will appear here!</h5>
+                                                {% endif %}
+                                                {% for task in projectList.getTasks() %}
+                                                    <div class="row justify-content-center mb-2">
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input" type="checkbox" id="checkTask{{ task.getId() }}" value="option1">
+                                                            <label class="form-check-label" for="checkTask{{ task.getId() }}">{{ task.getName() }}</label>
+                                                        </div>
+                                                        <div class="btn-group">
+                                                            <a data-toggle="collapse" data-target="#editTaskForm{{ task.getId() }}" href="tasks?editTaskId={{ task.getId() }}" class="btn btn-secondary bg-light"><i class="fa fa-pencil text-dark"></i></a>
+                                                            <a href="projects?deleteTaskId={{ task.getId() }}" class="btn btn-secondary bg-light"><i class="fa fa-trash text-dark"></i></a>
+
+{#                                                            {% if projectList.getTeam() is not null %}#}
+{#                                                                <select class="form-select btn ml-2">#}
+{#                                                                    <option selected>Assign To...</option>#}
+{#                                                                    <option value="1">Team mate 1</option>#}
+{#                                                                    <option value="2">Team mate 2</option>#}
+{#                                                                    <option value="3">Team mate 3</option>#}
+{#                                                                </select>#}
+{#                                                            {% endif %}#}
+
+
+                                                        </div>
+{#                                                        Edit task form#}
+                                                        <div class="collapse mt-2" id="editTaskForm{{ task.getId() }}">
+                                                            <form class="form-inline" method="post" action="/projects?editTaskId={{ task.getId() }}">
+                                                                <div class="form-group mx-sm-3 mb-2">
+                                                                    <label for="newTaskName" class="sr-only">New task name</label>
+                                                                    <input type="text" class="form-control" id="newTaskName" name="newTaskName" placeholder="Enter new task name" required>
+                                                                </div>
+                                                                <input type="submit" value="Edit Task" class="btn btn-outline-primary mb-2" name="editTaskSubmitBtn">
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                {% endfor %}
+
+                                                <div class="collapse" id="createTaskForm{{ projectList.getId() }}">
+                                                    {#                                                        Replace this with symfony form #}
+                                                    <form class="form-inline" method="post" action="/projects?addTaskProjectId={{ projectList.getId() }}">
+                                                        <div class="form-group mx-sm-3 mb-2">
+                                                            <label for="taskName" class="sr-only">Task Name</label>
+                                                            <input type="text" class="form-control" id="taskName" name="taskName" placeholder="Enter task name">
+                                                        </div>
+                                                        <input type="submit" value="Create Task" class="btn btn-outline-success mb-2" name="createTaskSubmitBtn">
+                                                    </form>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                <button class="btn btn-outline-success mr-5" type="button" data-toggle="collapse" data-target="#createTaskForm{{ projectList.getId() }}" aria-expanded="false" aria-controls="collapseExample">
+                                                    Add a New Task
+                                                </button>
+                                                <button type="button" class="btn btn-outline-primary ml-auto">Save Changes</button>
+{#                                                Form to create a task#}
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% block extraBottom %}
+                                {% endblock %}
+                            </div>
+                            {#                        </div>#}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+{% endblock %}

@@ -11,6 +11,16 @@ services:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
 
+    # configure the session service
+    Symfony\Component\HttpFoundation\Session\SessionInterface: '@session'
+    # configure the team controller
+    App\Controller\TeamController:
+        arguments:
+            $session: '@Symfony\Component\HttpFoundation\Session\SessionInterface'
+
+    session:
+        class: Symfony\Component\HttpFoundation\Session\Session
+
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
     App\:
